@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { List } from "lucide-react";
+import { slugify } from "@/utils/string";
 
 interface TOCItem {
   id: string;
@@ -10,18 +11,6 @@ interface TOCItem {
 interface TableOfContentsProps {
   content: string;
 }
-
-const slugify = (text: string) => {
-  return text
-    .toString()
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/[^\w-]+/g, "")
-    .replace(/--+/g, "-")
-    .replace(/^-+/, "")
-    .replace(/-+$/, "");
-};
 
 export const TableOfContents = ({ content }: TableOfContentsProps) => {
   const headings = useMemo(() => {

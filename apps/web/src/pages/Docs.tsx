@@ -3,26 +3,8 @@ import { motion, AnimatePresence } from "motion/react";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
 import { MarkdownRenderer } from "@/components/docs/MarkdownRenderer";
 import { TableOfContents } from "@/components/docs/TableOfContents";
-import { DocSection } from "@/types/DocSection";
 import { BrutalButton } from "@/components/ui/BrutalButton";
-
-const docSections: DocSection[] = [
-  {
-    id: "getting-started",
-    title: "Getting Started",
-    filePath: "/docs/getting-started.md",
-  },
-  {
-    id: "configuration",
-    title: "Configuration",
-    filePath: "/docs/configuration.md",
-  },
-  {
-    id: "security-policies",
-    title: "Security Policies",
-    filePath: "/docs/security-policies.md",
-  },
-];
+import { DOC_SECTIONS } from "@/constants/docs";
 
 export const DocsPage = () => {
   const [activeSectionId, setActiveSectionId] = useState("getting-started");
@@ -32,7 +14,7 @@ export const DocsPage = () => {
   useEffect(() => {
     const fetchDoc = async () => {
       setIsLoading(true);
-      const section = docSections.find((s) => s.id === activeSectionId);
+      const section = DOC_SECTIONS.find((s) => s.id === activeSectionId);
       if (section) {
         try {
           const response = await fetch(section.filePath);
@@ -47,12 +29,13 @@ export const DocsPage = () => {
     };
 
     fetchDoc();
+    window.scrollTo(0, 0);
   }, [activeSectionId]);
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-zinc-900 transition-colors">
       <DocsSidebar
-        sections={docSections}
+        sections={DOC_SECTIONS}
         activeSectionId={activeSectionId}
         onSelect={setActiveSectionId}
       />
