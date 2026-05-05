@@ -1,7 +1,4 @@
-export interface FAQItem {
-  q: string;
-  a: string;
-}
+import { FAQItem } from "@/types/FAQ";
 
 export const FAQS: FAQItem[] = [
   {

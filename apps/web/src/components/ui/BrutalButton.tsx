@@ -1,13 +1,18 @@
 import { motion } from "motion/react";
+import React from "react";
 
-interface BrutalButtonProps {
+interface BrutalButtonProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
   variant?: "yellow" | "white" | "black";
   className?: string;
   size?: "sm" | "md" | "lg";
   shadow?: "yellow" | "black" | "white" | "yellow-sm" | "black-sm" | "white-sm";
-  as?: any;
-  [key: string]: any;
+  as?: React.ElementType;
+  href?: string;
+  to?: string;
+  target?: string;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 }
 
 export const BrutalButton = ({

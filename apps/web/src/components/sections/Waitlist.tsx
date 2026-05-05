@@ -10,6 +10,7 @@ import {
   ThumbsUp,
 } from "lucide-react";
 import { useWaitlistForm } from "@/hooks/useWaitlistForm";
+import { WaitlistStep } from "@/types/Waitlist";
 
 export const Waitlist = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -34,7 +35,7 @@ export const Waitlist = () => {
     }
   };
 
-  const steps = [
+  const steps: WaitlistStep[] = [
     {
       title: "JOIN THE REVOLUTION.",
       description:

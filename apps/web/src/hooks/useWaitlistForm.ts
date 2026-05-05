@@ -1,12 +1,5 @@
 import { useState } from "react";
-
-export interface WaitlistFormData {
-  email: string;
-  reason: string;
-  usage: string;
-  improvement: string;
-  pricing: string;
-}
+import { WaitlistFormData } from "@/types/Waitlist";
 
 export const useWaitlistForm = (onSuccess: () => void) => {
   const [step, setStep] = useState(0);

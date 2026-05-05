@@ -1,10 +1,4 @@
-export interface PricingFeature {
-  name: string;
-  solo: boolean | string;
-  pro: boolean | string;
-  enterprise: boolean | string;
-  detail: string;
-}
+import { PricingFeature } from "@/types/Pricing";
 
 export const PRICING_FEATURES: PricingFeature[] = [
   {

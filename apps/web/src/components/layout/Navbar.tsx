@@ -3,12 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { BrutalButton } from "@/components/ui/BrutalButton";
+import { NavLinkItem } from "@/types/Common";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  const links = [
+  const links: NavLinkItem[] = [
     { name: "Features", path: "/#features" },
     { name: "Pricing", path: "/pricing" },
     { name: "Docs", path: "/docs" },
