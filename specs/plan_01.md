@@ -6,7 +6,7 @@ The system is designed as a **decoupled, event-driven Monorepo**. This ensures t
 
 ### 1.1 High-Level Logic Flow
 1. **Trigger:** User pushes code to GitHub.
-2. **Ingress:** `apps/web` receives a Webhook, validates it, and pushes to Redis.
+2. **Ingress:** `apps/client` receives a Webhook, validates it, and pushes to Redis.
 3. **Queue:** BullMQ manages the job lifecycle (retries, concurrency).
 4. **Execution:** `apps/worker` consumes the job, interacts with `packages/core` to talk to Gemini and GitHub.
 5. **Persistence:** `packages/database` tracks the review status and user credits.
@@ -15,7 +15,7 @@ The system is designed as a **decoupled, event-driven Monorepo**. This ensures t
 
 ## 2. Monorepo Structure & File Logic
 
-### 2.1 `apps/web` (Frontend & API Gateway)
+### 2.1 `apps/client` (Frontend & API Gateway)
 This is the entry point for both users and GitHub.
 
 *   **`app/api/webhooks/github/route.ts`**
@@ -29,7 +29,18 @@ This is the entry point for both users and GitHub.
 *   **`middleware.ts`**
     *   *Logic:* Protects dashboard routes using NextAuth session checks.
 
-### 2.2 `apps/worker` (The Heavy Lifter)
+### 2.2 `apps/web` (Marketing & Landing Page)
+The public-facing marketing site and documentation hub.
+
+*   **`src/App.tsx`**
+    *   *Logic:* Configures client-side routing using `react-router-dom`.
+    *   *Logic:* Manages the global layout, including navigation and footer components.
+*   **`src/pages/LandingPage.tsx`**
+    *   *Logic:* The primary landing experience for prospective users.
+*   **`src/pages/DocsPage.tsx`**
+    *   *Logic:* Displays product documentation and integration guides.
+
+### 2.3 `apps/worker` (The Heavy Lifter)
 A standalone Node.js process designed for high-memory AI operations.
 
 *   **`src/index.ts`**
@@ -44,7 +55,7 @@ A standalone Node.js process designed for high-memory AI operations.
 *   **`src/queues/connection.ts`**
     *   *Logic:* Manages the IORedis connection shared across the worker.
 
-### 2.3 `packages/core` (Shared Business Logic)
+### 2.4 `packages/core` (Shared Business Logic)
 Internal library used by both the Web App and the Worker.
 
 *   **`src/ai/gemini.service.ts`**
@@ -60,7 +71,7 @@ Internal library used by both the Web App and the Worker.
 *   **`src/utils/diffParser.ts`**
     *   *Logic:* Truncates extremely large diffs that might exceed token limits, prioritizing changed lines over context lines.
 
-### 2.4 `packages/database` (Data Layer)
+### 2.5 `packages/database` (Data Layer)
 *   **`prisma/schema.prisma`**
     *   `User`: (id, email, stripeCustomerId)
     *   `Repository`: (id, githubId, name, isActive, personaPrompt)
@@ -73,7 +84,7 @@ Internal library used by both the Web App and the Worker.
 ## 3. Data Flow Diagram (Logic Sequence)
 
 ```text
-[GitHub] --(Webhook)--> [apps/web]
+[GitHub] --(Webhook)--> [apps/client]
                            |
                     (Validate HMAC)
                            |
@@ -98,7 +109,7 @@ Internal library used by both the Web App and the Worker.
 
 ## 4. Key Implementation Logic (File-by-File)
 
-### 4.1 The Webhook Ingestor (`apps/web/api/webhook`)
+### 4.1 The Webhook Ingestor (`apps/client/api/webhook`)
 ```typescript
 // Pseudocode for high-level logic
 export async function POST(req: Request) {
