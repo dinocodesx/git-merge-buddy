@@ -10,7 +10,10 @@
   
   --shadow-brutal: 8px 8px 0px 0px #ffff00;
   --shadow-brutal-black: 8px 8px 0px 0px #000000;
+  --shadow-brutal-white: 8px 8px 0px 0px #ffffff;
   --shadow-brutal-sm: 4px 4px 0px 0px #ffff00;
+  --shadow-brutal-black-sm: 4px 4px 0px 0px #000000;
+  --shadow-brutal-white-sm: 4px 4px 0px 0px #ffffff;
 }
 
 @layer base {

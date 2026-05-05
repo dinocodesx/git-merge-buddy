@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { BrutalButton } from "../../../components/ui/BrutalButton";
+import { BrutalButton } from "@/components/ui/BrutalButton";
 
 export const Hero = () => {
   const [rotatedIndex, setRotatedIndex] = useState(0);
@@ -49,10 +49,16 @@ export const Hero = () => {
           excellence.
         </p>
         <div className="flex flex-wrap justify-center gap-6 pt-8">
-          <BrutalButton size="lg" as="a" href="#waitlist">
+          <BrutalButton size="lg" as="a" href="#waitlist" shadow="white">
             Get Started
           </BrutalButton>
-          <BrutalButton variant="white" size="lg" as={Link} to="/pricing">
+          <BrutalButton
+            variant="white"
+            size="lg"
+            as={Link}
+            to="/pricing"
+            shadow="white"
+          >
             Compare Plans
           </BrutalButton>
         </div>

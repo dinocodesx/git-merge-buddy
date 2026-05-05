@@ -39,7 +39,7 @@ export const Waitlist = () => {
               />
               <button 
                 type="submit"
-                className="bg-black text-primary px-12 py-6 font-space font-bold text-2xl uppercase hover:bg-neutral-800 transition-colors"
+                className="bg-black text-primary px-12 py-6 font-space font-bold text-2xl uppercase hover:bg-neutral-800 transition-colors border-t-4 md:border-t-0 md:border-l-4 border-primary"
               >
                 Join Waitlist
               </button>

@@ -1,5 +1,5 @@
 import { Zap, X } from "lucide-react";
-import { BrutalButton } from "../components/ui/BrutalButton";
+import { BrutalButton } from "@/components/ui/BrutalButton";
 
 export const PricingPage = () => {
   interface Feature {

@@ -5,6 +5,7 @@ interface BrutalButtonProps {
   variant?: "yellow" | "white" | "black";
   className?: string;
   size?: "sm" | "md" | "lg";
+  shadow?: "yellow" | "black" | "white" | "yellow-sm" | "black-sm" | "white-sm";
   as?: any;
   [key: string]: any;
 }
@@ -14,6 +15,7 @@ export const BrutalButton = ({
   variant = "yellow",
   className = "",
   size = "md",
+  shadow = "yellow-sm",
   as: Component = "button",
   ...props
 }: BrutalButtonProps) => {
@@ -29,6 +31,15 @@ export const BrutalButton = ({
     lg: "px-10 py-5 text-xl md:text-2xl",
   };
 
+  const shadows = {
+    yellow: "shadow-brutal",
+    black: "shadow-brutal-black",
+    white: "shadow-brutal-white",
+    "yellow-sm": "shadow-brutal-sm",
+    "black-sm": "shadow-brutal-black-sm",
+    "white-sm": "shadow-brutal-white-sm",
+  };
+
   return (
     <motion.div
       whileHover={{ translateZ: 0, scale: 1.02 }}
@@ -38,8 +49,8 @@ export const BrutalButton = ({
       <Component
         className={`
           relative font-space font-bold uppercase border-4 border-primary
-          ${variants[variant]} ${sizes[size]} ${className}
-          shadow-brutal-sm active:shadow-none active:translate-x-1 active:translate-y-1 transition-all cursor-pointer
+          ${variants[variant]} ${sizes[size]} ${shadows[shadow]} ${className}
+          active:shadow-none active:translate-x-1 active:translate-y-1 transition-all cursor-pointer
           flex items-center justify-center gap-2
         `}
         {...props}

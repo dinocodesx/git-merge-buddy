@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X } from "lucide-react";
-import { BrutalButton } from "../ui/BrutalButton";
+import { BrutalButton } from "@/components/ui/BrutalButton";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,6 +42,7 @@ export const Navbar = () => {
           as="a"
           href="#waitlist"
           className="hidden md:flex"
+          shadow="black-sm"
         >
           Join Beta
         </BrutalButton>

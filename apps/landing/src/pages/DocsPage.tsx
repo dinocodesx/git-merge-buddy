@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
 import { Zap, ShieldAlert, Cpu } from "lucide-react";
-import { BrutalButton } from "../components/ui/BrutalButton";
+import { BrutalButton } from "@/components/ui/BrutalButton";
 
 export const DocsPage = () => {
   const [activeSection, setActiveSection] = useState("getting-started");
