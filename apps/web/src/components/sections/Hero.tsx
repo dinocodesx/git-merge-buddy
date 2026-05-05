@@ -15,7 +15,7 @@ export const Hero = () => {
   }, []);
 
   return (
-    <header className="relative px-6 py-24 md:py-48 overflow-hidden min-h-[80vh] flex flex-col items-center text-center bg-zinc-900 transition-colors">
+    <header className="relative px-6 py-20 md:py-32 overflow-hidden min-h-[80vh] flex flex-col items-center text-center bg-zinc-900 transition-colors">
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none -z-10 opacity-[0.05]">
         <div className="font-space font-black text-[25vw] -rotate-12 flex gap-[10vw] text-primary">
           <span>SHIP</span>
