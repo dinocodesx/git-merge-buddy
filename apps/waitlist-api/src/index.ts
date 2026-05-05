@@ -1,12 +1,23 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import pg from "pg";
 
-const prisma = new PrismaClient();
+const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
+
 const app = express();
 const port = process.env.PORT || 3002;
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGIN || "http://localhost:3001",
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.use(express.json());
 
 app.post("/api/waitlist", async (req, res) => {
