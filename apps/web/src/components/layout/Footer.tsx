@@ -9,8 +9,8 @@ export const Footer = () => (
             Git Merge Buddy
           </div>
           <p className="text-white/60 font-work font-medium normal-case">
-            Automating the senior engineering eye. Built for teams that refuse to
-            compromise on code quality.
+            Automating the senior engineering eye. Built for teams that refuse
+            to compromise on code quality.
           </p>
         </div>
 
@@ -70,7 +70,7 @@ export const Footer = () => (
     </footer>
     <div className="bg-black border-t-4 border-primary py-10 overflow-hidden pointer-events-none select-none">
       <h2 className="text-[20vw] font-space font-black text-primary leading-none tracking-tighter opacity-10 whitespace-nowrap -mb-10 text-center uppercase">
-        Git Merge Buddy
+        Git Merge
       </h2>
     </div>
   </>

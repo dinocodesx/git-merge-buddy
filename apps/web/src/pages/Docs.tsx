@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { DocsSidebar } from "@/features/docs/components/DocsSidebar";
-import { MarkdownRenderer } from "@/features/docs/components/MarkdownRenderer";
-import { DocSection } from "@/features/docs/types";
+import { DocsSidebar } from "@/components/docs/DocsSidebar";
+import { MarkdownRenderer } from "@/components/docs/MarkdownRenderer";
+import { TableOfContents } from "@/components/docs/TableOfContents";
+import { DocSection } from "@/types/DocSection";
 import { BrutalButton } from "@/components/ui/BrutalButton";
 
 const docSections: DocSection[] = [
@@ -56,40 +57,44 @@ export const DocsPage = () => {
         onSelect={setActiveSectionId}
       />
 
-      <main className="flex-1 p-8 md:p-16 max-w-4xl">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeSectionId}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center h-64">
-                <div className="text-primary font-space font-bold text-2xl animate-pulse">
-                  LOADING...
+      <div className="flex-1 flex flex-col xl:flex-row gap-8 xl:gap-16 p-8 md:p-16 overflow-hidden">
+        <main className="flex-1 max-w-4xl">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeSectionId}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center h-64">
+                  <div className="text-primary font-space font-bold text-2xl animate-pulse">
+                    LOADING...
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <MarkdownRenderer content={content} />
-            )}
-          </motion.div>
-        </AnimatePresence>
+              ) : (
+                <MarkdownRenderer content={content} />
+              )}
+            </motion.div>
+          </AnimatePresence>
 
-        <div className="mt-24 pt-8 border-t-4 border-primary/20 flex justify-between items-center">
-          <BrutalButton
-            variant="white"
-            size="sm"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          >
-            Back to Top
-          </BrutalButton>
-          <div className="flex gap-4 opacity-40 font-bold uppercase text-xs text-white">
-            <span>Last Updated: 2024</span>
+          <div className="mt-24 pt-8 border-t-4 border-primary/20 flex justify-between items-center">
+            <BrutalButton
+              variant="white"
+              size="sm"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            >
+              Back to Top
+            </BrutalButton>
+            <div className="flex gap-4 opacity-40 font-bold uppercase text-xs text-white">
+              <span>Last Updated: 2024</span>
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+
+        {!isLoading && <TableOfContents content={content} />}
+      </div>
     </div>
   );
 };
