@@ -40,7 +40,7 @@ export async function joinWaitlist(data: WaitlistFormData) {
     if (!existingEntry && process.env.RESEND_API_KEY) {
       try {
         await resend.emails.send({
-          from: "Git Merge Buddy <onboarding@resend.dev>",
+          from: "Git Merge Buddy <waitlist@git.dinocodes.in>",
           to: email,
           subject: "Welcome to the Future of Code Reviews",
           react: <WelcomeEmail />,
