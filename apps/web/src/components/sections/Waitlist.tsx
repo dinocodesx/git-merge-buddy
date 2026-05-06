@@ -174,7 +174,9 @@ const SuccessView = ({ email }: { email: string }) => (
       <div className="space-y-6 text-xl md:text-2xl font-work font-medium text-white/90">
         <p className="flex items-center justify-center gap-3">
           <Mail className="text-primary" />
-          Check <span className="text-primary font-black underline">{email}</span> for confirmation.
+          Check{" "}
+          <span className="text-primary font-black underline">{email}</span> for
+          confirmation.
         </p>
         <p className="flex items-center justify-center gap-3">
           <ThumbsUp className="text-primary" />
@@ -217,15 +219,18 @@ export const Waitlist = () => {
   const stepMeta = [
     {
       title: "JOIN THE REVOLUTION.",
-      description: "Join 2,000+ engineers who have already secured their place in the future of automated code review.",
+      description:
+        "Join 2,000+ engineers who have already secured their place in the future of automated code review.",
     },
     {
       title: "TELL US MORE.",
-      description: "We're building this for you. How can Git Merge Buddy help your workflow?",
+      description:
+        "We're building this for you. How can Git Merge Buddy help your workflow?",
     },
     {
       title: "SHAPE THE PRODUCT.",
-      description: "One last thing. Help us get the pricing and features right.",
+      description:
+        "One last thing. Help us get the pricing and features right.",
     },
   ];
 
@@ -250,13 +255,31 @@ export const Waitlist = () => {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-6">
-                {step === 0 && <Step1 formData={formData} updateField={updateField} />}
-                {step === 1 && <Step2 formData={formData} updateField={updateField} onBack={prevStep} />}
-                {step === 2 && <Step3 formData={formData} updateField={updateField} onBack={prevStep} isSubmitting={isSubmitting} />}
-                
+              <form
+                onSubmit={handleSubmit}
+                className="max-w-2xl mx-auto space-y-6"
+              >
+                {step === 0 && (
+                  <Step1 formData={formData} updateField={updateField} />
+                )}
+                {step === 1 && (
+                  <Step2
+                    formData={formData}
+                    updateField={updateField}
+                    onBack={prevStep}
+                  />
+                )}
+                {step === 2 && (
+                  <Step3
+                    formData={formData}
+                    updateField={updateField}
+                    onBack={prevStep}
+                    isSubmitting={isSubmitting}
+                  />
+                )}
+
                 {error && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="bg-red-500 text-white p-4 border-4 border-black font-space font-bold uppercase shadow-brutal-sm"

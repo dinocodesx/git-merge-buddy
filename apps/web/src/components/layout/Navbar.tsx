@@ -5,7 +5,13 @@ import { Menu, X } from "lucide-react";
 import { BrutalButton } from "@/components/ui/BrutalButton";
 import { NavLinkItem } from "@/types/Common";
 
-const DesktopMenu = ({ links, currentPath }: { links: NavLinkItem[]; currentPath: string }) => (
+const DesktopMenu = ({
+  links,
+  currentPath,
+}: {
+  links: NavLinkItem[];
+  currentPath: string;
+}) => (
   <div className="hidden md:flex gap-8 items-center font-space font-bold uppercase ml-auto mr-8">
     {links.map((link) => (
       <Link
@@ -19,7 +25,15 @@ const DesktopMenu = ({ links, currentPath }: { links: NavLinkItem[]; currentPath
   </div>
 );
 
-const MobileMenu = ({ links, isOpen, onClose }: { links: NavLinkItem[]; isOpen: boolean; onClose: () => void }) => (
+const MobileMenu = ({
+  links,
+  isOpen,
+  onClose,
+}: {
+  links: NavLinkItem[];
+  isOpen: boolean;
+  onClose: () => void;
+}) => (
   <AnimatePresence>
     {isOpen && (
       <motion.div
@@ -38,12 +52,7 @@ const MobileMenu = ({ links, isOpen, onClose }: { links: NavLinkItem[]; isOpen: 
             {link.name}
           </Link>
         ))}
-        <BrutalButton
-          size="lg"
-          as="a"
-          href="#waitlist"
-          onClick={onClose}
-        >
+        <BrutalButton size="lg" as="a" href="#waitlist" onClick={onClose}>
           Join Beta
         </BrutalButton>
       </motion.div>
@@ -90,7 +99,11 @@ export const Navbar = () => {
         </button>
       </div>
 
-      <MobileMenu links={links} isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <MobileMenu
+        links={links}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
     </nav>
   );
 };

@@ -73,7 +73,11 @@ export const DocsPage = () => {
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
             >
-              {isLoading ? <LoadingView /> : <MarkdownRenderer content={content} />}
+              {isLoading ? (
+                <LoadingView />
+              ) : (
+                <MarkdownRenderer content={content} />
+              )}
             </motion.div>
           </AnimatePresence>
 

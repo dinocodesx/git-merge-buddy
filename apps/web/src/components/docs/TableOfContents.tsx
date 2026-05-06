@@ -24,7 +24,8 @@ const TOCHeader = () => (
 const TOCProTip = () => (
   <div className="mt-12 p-4 bg-zinc-800 border-2 border-primary/20 shadow-brutal-sm">
     <p className="text-[10px] font-work font-bold text-white/40 uppercase leading-tight">
-      Pro Tip: Use <span className="text-primary">CMD+K</span> to search through our entire documentation instantly.
+      Pro Tip: Use <span className="text-primary">CMD+K</span> to search through
+      our entire documentation instantly.
     </p>
   </div>
 );
@@ -68,7 +69,7 @@ export const TableOfContents = ({ content }: TableOfContentsProps) => {
   return (
     <aside className="hidden xl:block w-64 sticky top-8 h-fit max-h-[calc(100vh-4rem)] overflow-y-auto pr-4">
       <TOCHeader />
-      
+
       <nav className="space-y-4">
         {headings.map((heading, index) => (
           <a
@@ -79,10 +80,10 @@ export const TableOfContents = ({ content }: TableOfContentsProps) => {
               heading.level === 1
                 ? "text-sm text-white"
                 : heading.level === 2
-                ? "text-xs text-white/80 ml-3"
-                : heading.level === 3
-                ? "text-[10px] text-white/60 ml-6"
-                : "text-[10px] text-white/40 ml-9"
+                  ? "text-xs text-white/80 ml-3"
+                  : heading.level === 3
+                    ? "text-[10px] text-white/60 ml-6"
+                    : "text-[10px] text-white/40 ml-9"
             }`}
           >
             <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">

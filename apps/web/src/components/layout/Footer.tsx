@@ -12,8 +12,8 @@ const FooterLogo = () => (
       Git Merge Buddy
     </div>
     <p className="text-white/60 font-work font-medium normal-case">
-      Automating the senior engineering eye. Built for teams that refuse
-      to compromise on code quality.
+      Automating the senior engineering eye. Built for teams that refuse to
+      compromise on code quality.
     </p>
   </div>
 );
@@ -28,10 +28,7 @@ const FooterColumns = ({ columns }: { columns: FooterColumn[] }) => (
         <ul className="space-y-2 opacity-60 font-space font-bold">
           {col.links.map((l) => (
             <li key={l.name}>
-              <Link
-                to={l.path}
-                className="hover:text-white transition-colors"
-              >
+              <Link to={l.path} className="hover:text-white transition-colors">
                 {l.name}
               </Link>
             </li>

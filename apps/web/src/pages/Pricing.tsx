@@ -4,15 +4,17 @@ import { BrutalButton } from "@/components/ui/BrutalButton";
 import { PRICING_FEATURES } from "@/constants/pricing";
 import { PricingFeature } from "@/types/Pricing";
 
-const FeatureCell = ({ value, isHighlighted = false }: { value: boolean | string; isHighlighted?: boolean }) => {
+const FeatureCell = ({
+  value,
+  isHighlighted = false,
+}: {
+  value: boolean | string;
+  isHighlighted?: boolean;
+}) => {
   const content = () => {
     if (value === true) {
       return (
-        <Zap
-          size={20}
-          className="mx-auto text-primary"
-          fill="currentColor"
-        />
+        <Zap size={20} className="mx-auto text-primary" fill="currentColor" />
       );
     }
     if (value === "Partial") {
@@ -25,14 +27,24 @@ const FeatureCell = ({ value, isHighlighted = false }: { value: boolean | string
   };
 
   return (
-    <td className={`p-6 text-center ${isHighlighted ? "border-x-4 border-primary/20 bg-primary/5" : ""}`}>
+    <td
+      className={`p-6 text-center ${isHighlighted ? "border-x-4 border-primary/20 bg-primary/5" : ""}`}
+    >
       {content()}
     </td>
   );
 };
 
-const FeatureRow = ({ feature, index }: { feature: PricingFeature; index: number }) => (
-  <tr className={`border-b-2 border-primary/10 ${index % 2 === 0 ? "bg-zinc-900/50" : ""}`}>
+const FeatureRow = ({
+  feature,
+  index,
+}: {
+  feature: PricingFeature;
+  index: number;
+}) => (
+  <tr
+    className={`border-b-2 border-primary/10 ${index % 2 === 0 ? "bg-zinc-900/50" : ""}`}
+  >
     <td className="p-6">
       <div className="font-bold uppercase text-sm md:text-base">
         {feature.name}

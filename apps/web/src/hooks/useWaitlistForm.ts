@@ -25,9 +25,10 @@ export const useWaitlistForm = (onSuccess: () => void) => {
   const validateStep = (currentStep: number): string | null => {
     if (currentStep === 0) {
       if (!formData.email) return "Email is required";
-      if (!isValidEmail(formData.email)) return "Please enter a valid email address";
+      if (!isValidEmail(formData.email))
+        return "Please enter a valid email address";
     }
-    
+
     if (currentStep === 1 && (!formData.reason || !formData.usage)) {
       return "Please fill in all fields";
     }
@@ -66,12 +67,17 @@ export const useWaitlistForm = (onSuccess: () => void) => {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || "Failed to join waitlist. Please try again.");
+        throw new Error(
+          data.error || "Failed to join waitlist. Please try again.",
+        );
       }
 
       onSuccess();
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Network error. Please check your connection and try again.";
+      const message =
+        err instanceof Error
+          ? err.message
+          : "Network error. Please check your connection and try again.";
       console.error("Submission failed:", err);
       setError(message);
     } finally {

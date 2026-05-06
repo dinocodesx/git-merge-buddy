@@ -7,7 +7,10 @@ interface DocsSearchProps {
   placeholder?: string;
 }
 
-export const DocsSearch = ({ onSearch, placeholder = "SEARCH..." }: DocsSearchProps) => {
+export const DocsSearch = ({
+  onSearch,
+  placeholder = "SEARCH",
+}: DocsSearchProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
