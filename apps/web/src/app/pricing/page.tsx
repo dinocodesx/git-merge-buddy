@@ -1,5 +1,4 @@
 import { Zap, X } from "lucide-react";
-import React from "react";
 import { BrutalButton } from "@/components/ui/BrutalButton";
 import { PRICING_FEATURES } from "@/constants/pricing";
 import { PricingFeature } from "@/types/Pricing";
@@ -59,7 +58,7 @@ const FeatureRow = ({
   </tr>
 );
 
-export const PricingPage = () => {
+export default function PricingPage() {
   return (
     <div className="bg-zinc-900 min-h-screen py-24 px-6">
       <div className="max-w-6xl mx-auto space-y-16">
@@ -100,4 +99,4 @@ export const PricingPage = () => {
       </div>
     </div>
   );
-};
+}

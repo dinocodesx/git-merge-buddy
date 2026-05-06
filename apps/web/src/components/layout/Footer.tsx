@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { NavLinkItem } from "@/types/Common";
 
 interface FooterColumn {
@@ -28,7 +28,7 @@ const FooterColumns = ({ columns }: { columns: FooterColumn[] }) => (
         <ul className="space-y-2 opacity-60 font-space font-bold">
           {col.links.map((l) => (
             <li key={l.name}>
-              <Link to={l.path} className="hover:text-white transition-colors">
+              <Link href={l.path} className="hover:text-white transition-colors">
                 {l.name}
               </Link>
             </li>

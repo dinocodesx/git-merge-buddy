@@ -1,5 +1,8 @@
+"use client";
+
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { BrutalButton } from "@/components/ui/BrutalButton";
@@ -16,7 +19,7 @@ const DesktopMenu = ({
     {links.map((link) => (
       <Link
         key={link.name}
-        to={link.path}
+        href={link.path}
         className={`transition-all hover:text-primary hover:bg-black px-2 py-1 ${currentPath === link.path ? "bg-black text-primary" : "text-black"}`}
       >
         {link.name}
@@ -45,7 +48,7 @@ const MobileMenu = ({
         {links.map((link) => (
           <Link
             key={link.name}
-            to={link.path}
+            href={link.path}
             onClick={onClose}
             className="text-2xl font-space font-bold uppercase text-black"
           >
@@ -62,7 +65,7 @@ const MobileMenu = ({
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
+  const pathname = usePathname();
 
   const links: NavLinkItem[] = [
     { name: "Features", path: "/#features" },
@@ -73,19 +76,19 @@ export const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 bg-white border-b-4 border-black px-6 py-4 flex justify-between items-center transition-colors">
       <Link
-        to="/"
+        href="/"
         className="text-2xl font-black italic tracking-tighter text-black"
       >
         Git Merge Buddy
       </Link>
 
-      <DesktopMenu links={links} currentPath={location.pathname} />
+      <DesktopMenu links={links} currentPath={pathname} />
 
       <div className="flex items-center gap-4">
         <BrutalButton
           size="sm"
           as="a"
-          href="#waitlist"
+          href="/#waitlist"
           className="hidden md:flex"
           shadow="black-sm"
         >

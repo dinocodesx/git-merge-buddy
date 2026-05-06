@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useRef, useEffect } from "react";
 import { Search, Command } from "lucide-react";
 import { useKeyboardShortcut } from "@/hooks/useKeyboardShortcut";

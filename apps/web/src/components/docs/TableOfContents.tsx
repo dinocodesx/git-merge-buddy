@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useMemo } from "react";
 import { List } from "lucide-react";
 import { slugify } from "@/utils/string";
@@ -30,8 +32,41 @@ const TOCProTip = () => (
   </div>
 );
 
-export const TableOfContents = ({ content }: TableOfContentsProps) => {
-  const headings = useMemo(() => {
+const TOCLink = ({
+  heading,
+  onClick,
+}: {
+  heading: TOCItem;
+  onClick: (e: React.MouseEvent<HTMLAnchorElement>, id: string) => void;
+}) => {
+  const getLevelStyles = (level: number) => {
+    switch (level) {
+      case 1:
+        return "text-sm text-white";
+      case 2:
+        return "text-xs text-white/80 ml-3";
+      case 3:
+        return "text-[10px] text-white/60 ml-6";
+      default:
+        return "text-[10px] text-white/40 ml-9";
+    }
+  };
+
+  return (
+    <a
+      href={`#${heading.id}`}
+      onClick={(e) => onClick(e, heading.id)}
+      className={`block font-space font-bold uppercase transition-all duration-200 hover:text-primary ${getLevelStyles(heading.level)}`}
+    >
+      <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">
+        {heading.text}
+      </span>
+    </a>
+  );
+};
+
+const useHeadings = (content: string) => {
+  return useMemo(() => {
     const headingRegex = /^(#{1,4})\s+(.+)$/gm;
     const items: TOCItem[] = [];
     let match;
@@ -48,22 +83,26 @@ export const TableOfContents = ({ content }: TableOfContentsProps) => {
 
     return items;
   }, [content]);
+};
+
+export const TableOfContents = ({ content }: TableOfContentsProps) => {
+  const headings = useHeadings(content);
 
   if (headings.length === 0) return null;
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
     const element = document.getElementById(id);
-    if (element) {
-      const offset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
+    if (!element) return;
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
-    }
+    const offset = 80;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
   };
 
   return (
@@ -72,24 +111,11 @@ export const TableOfContents = ({ content }: TableOfContentsProps) => {
 
       <nav className="space-y-4">
         {headings.map((heading, index) => (
-          <a
+          <TOCLink
             key={`${heading.id}-${index}`}
-            href={`#${heading.id}`}
-            onClick={(e) => handleClick(e, heading.id)}
-            className={`block font-space font-bold uppercase transition-all duration-200 hover:text-primary ${
-              heading.level === 1
-                ? "text-sm text-white"
-                : heading.level === 2
-                  ? "text-xs text-white/80 ml-3"
-                  : heading.level === 3
-                    ? "text-[10px] text-white/60 ml-6"
-                    : "text-[10px] text-white/40 ml-9"
-            }`}
-          >
-            <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">
-              {heading.text}
-            </span>
-          </a>
+            heading={heading}
+            onClick={handleClick}
+          />
         ))}
       </nav>
 

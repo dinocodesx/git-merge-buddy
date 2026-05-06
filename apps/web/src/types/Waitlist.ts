@@ -5,9 +5,3 @@ export interface WaitlistFormData {
   improvement: string;
   pricing: string;
 }
-
-export interface WaitlistStep {
-  title: string;
-  description: string;
-  content: React.ReactNode;
-}

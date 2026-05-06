@@ -25,7 +25,7 @@ const FeatureCard = ({
 
     <div className="space-y-4">
       <div className="text-primary font-mono text-sm tracking-tight opacity-80 decoration-primary group-hover:underline">
-        //{tag}
+        {tag}
       </div>
       <h3 className="text-2xl md:text-3xl text-white font-space font-bold uppercase tracking-tight leading-none group-hover:text-primary transition-colors">
         {title}

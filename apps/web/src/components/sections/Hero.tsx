@@ -1,5 +1,7 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { BrutalButton } from "@/components/ui/BrutalButton";
 
@@ -37,7 +39,7 @@ const HeroButtons = () => (
       variant="white"
       size="lg"
       as={Link}
-      to="/pricing"
+      href="/pricing"
       shadow="white"
     >
       Compare Plans

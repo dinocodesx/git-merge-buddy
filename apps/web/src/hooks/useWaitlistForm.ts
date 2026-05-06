@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { WaitlistFormData } from "@/types/Waitlist";
+import { joinWaitlist } from "@/app/actions/waitlist";
 
 export const useWaitlistForm = (onSuccess: () => void) => {
   const [step, setStep] = useState(0);
@@ -22,18 +23,29 @@ export const useWaitlistForm = (onSuccess: () => void) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const validateStep = (currentStep: number): string | null => {
-    if (currentStep === 0) {
-      if (!formData.email) return "Email is required";
-      if (!isValidEmail(formData.email))
-        return "Please enter a valid email address";
-    }
+  const validateEmailStep = () => {
+    if (!formData.email) return "Email is required";
+    if (!isValidEmail(formData.email))
+      return "Please enter a valid email address";
+    return null;
+  };
 
-    if (currentStep === 1 && (!formData.reason || !formData.usage)) {
+  const validateDetailsStep = () => {
+    if (!formData.reason || !formData.usage) {
       return "Please fill in all fields";
     }
-
     return null;
+  };
+
+  const validateStep = (currentStep: number): string | null => {
+    switch (currentStep) {
+      case 0:
+        return validateEmailStep();
+      case 1:
+        return validateDetailsStep();
+      default:
+        return null;
+    }
   };
 
   const nextStep = () => {
@@ -56,20 +68,11 @@ export const useWaitlistForm = (onSuccess: () => void) => {
     setIsSubmitting(true);
     setError(null);
 
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3002";
-
     try {
-      const response = await fetch(`${apiUrl}/api/waitlist`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const result = await joinWaitlist(formData);
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(
-          data.error || "Failed to join waitlist. Please try again.",
-        );
+      if (result.error) {
+        throw new Error(result.error);
       }
 
       onSuccess();

@@ -5,13 +5,15 @@ import { Marquee } from "@/components/sections/Marquee";
 import { Waitlist } from "@/components/sections/Waitlist";
 import { FAQ } from "@/components/sections/FAQ";
 
-export const LandingPage = () => (
-  <>
-    <Hero />
-    <Features />
-    <Integrations />
-    <Marquee />
-    <Waitlist />
-    <FAQ />
-  </>
-);
+export default function LandingPage() {
+  return (
+    <>
+      <Hero />
+      <Features />
+      <Integrations />
+      <Marquee />
+      <Waitlist />
+      <FAQ />
+    </>
+  );
+}

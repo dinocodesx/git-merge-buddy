@@ -8,9 +8,10 @@ export const useKeyboardShortcut = (
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const isMatch = e.key.toLowerCase() === key.toLowerCase();
-      const hasModifier = metaOrCtrl ? e.metaKey || e.ctrlKey : true;
+      if (!isMatch) return;
 
-      if (!isMatch || !hasModifier) return;
+      const hasModifier = metaOrCtrl ? e.metaKey || e.ctrlKey : true;
+      if (!hasModifier) return;
 
       e.preventDefault();
       callback();

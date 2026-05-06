@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
@@ -29,7 +31,7 @@ const DocsFooter = () => (
   </div>
 );
 
-export const DocsPage = () => {
+export default function DocsPage() {
   const [activeSectionId, setActiveSectionId] = useState("getting-started");
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
@@ -88,4 +90,4 @@ export const DocsPage = () => {
       </div>
     </div>
   );
-};
+}

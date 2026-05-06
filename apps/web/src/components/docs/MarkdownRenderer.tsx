@@ -1,3 +1,5 @@
+"use client";
+
 import ReactMarkdown, { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Zap, PlayCircle, Copy, Check } from "lucide-react";
@@ -169,7 +171,7 @@ const Td: Components["td"] = ({ children }) => (
  * Media Components
  */
 const Media: Components["img"] = ({ src, alt }) => {
-  const isVideo = src?.match(/\.(mp4|webm|ogg|mov)$/i);
+  const isVideo = typeof src === "string" ? src.match(/\.(mp4|webm|ogg|mov)$/i) : null;
 
   const Container = ({ children }: { children: React.ReactNode }) => (
     <div className="my-10">

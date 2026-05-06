@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -83,6 +85,39 @@ const Step2 = ({ formData, updateField, onBack }: StepProps) => (
   </div>
 );
 
+const PricingSelector = ({
+  selected,
+  onSelect,
+}: {
+  selected: string;
+  onSelect: (id: string) => void;
+}) => (
+  <div className="bg-white border-4 border-black p-6 shadow-brutal-black text-left">
+    <label className="block font-space font-black text-black uppercase mb-4">
+      Pricing Preference
+    </label>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {[
+        { id: "monthly", label: "Monthly Subscription" },
+        { id: "one-time", label: "One-time Payment" },
+      ].map((opt) => (
+        <button
+          key={opt.id}
+          type="button"
+          onClick={() => onSelect(opt.id)}
+          className={`p-4 border-4 font-space font-bold uppercase transition-all ${
+            selected === opt.id
+              ? "bg-black text-primary border-primary"
+              : "bg-zinc-100 text-black border-black hover:bg-zinc-200"
+          }`}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  </div>
+);
+
 const Step3 = ({ formData, updateField, onBack, isSubmitting }: StepProps) => (
   <div className="space-y-6">
     <div className="bg-white border-4 border-black p-6 shadow-brutal-black text-left">
@@ -97,30 +132,12 @@ const Step3 = ({ formData, updateField, onBack, isSubmitting }: StepProps) => (
         className="w-full h-32 p-4 font-space font-bold text-lg outline-none bg-zinc-50 border-2 border-black text-black"
       />
     </div>
-    <div className="bg-white border-4 border-black p-6 shadow-brutal-black text-left">
-      <label className="block font-space font-black text-black uppercase mb-4">
-        Pricing Preference
-      </label>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {[
-          { id: "monthly", label: "Monthly Subscription" },
-          { id: "one-time", label: "One-time Payment" },
-        ].map((opt) => (
-          <button
-            key={opt.id}
-            type="button"
-            onClick={() => updateField("pricing", opt.id)}
-            className={`p-4 border-4 font-space font-bold uppercase transition-all ${
-              formData.pricing === opt.id
-                ? "bg-black text-primary border-primary"
-                : "bg-zinc-100 text-black border-black hover:bg-zinc-200"
-            }`}
-          >
-            {opt.label}
-          </button>
-        ))}
-      </div>
-    </div>
+
+    <PricingSelector
+      selected={formData.pricing}
+      onSelect={(id) => updateField("pricing", id)}
+    />
+
     <div className="flex gap-4">
       <button
         type="button"
@@ -167,7 +184,7 @@ const SuccessView = ({ email }: { email: string }) => (
       </div>
 
       <h3 className="text-5xl md:text-7xl font-space font-black uppercase mb-4 leading-none tracking-tighter">
-        YOU'RE ON <br />
+        YOU&apos;RE ON <br />
         THE LIST.
       </h3>
 
@@ -175,8 +192,8 @@ const SuccessView = ({ email }: { email: string }) => (
         <p className="flex items-center justify-center gap-3">
           <Mail className="text-primary" />
           Check{" "}
-          <span className="text-primary font-black underline">{email}</span> for
-          confirmation.
+          <span className="text-primary font-black underline">{email}</span>
+          for confirmation.
         </p>
         <p className="flex items-center justify-center gap-3">
           <ThumbsUp className="text-primary" />
@@ -192,6 +209,24 @@ const SuccessView = ({ email }: { email: string }) => (
     </div>
   </motion.div>
 );
+
+const WAITLIST_STEP_META = [
+  {
+    title: "JOIN THE REVOLUTION.",
+    description:
+      "Join 2,000+ engineers who have already secured their place in the future of automated code review.",
+  },
+  {
+    title: "TELL US MORE.",
+    description:
+      "We're building this for you. How can Git Merge Buddy help your workflow?",
+  },
+  {
+    title: "SHAPE THE PRODUCT.",
+    description:
+      "One last thing. Help us get the pricing and features right.",
+  },
+];
 
 export const Waitlist = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -216,91 +251,81 @@ export const Waitlist = () => {
     }
   };
 
-  const stepMeta = [
-    {
-      title: "JOIN THE REVOLUTION.",
-      description:
-        "Join 2,000+ engineers who have already secured their place in the future of automated code review.",
-    },
-    {
-      title: "TELL US MORE.",
-      description:
-        "We're building this for you. How can Git Merge Buddy help your workflow?",
-    },
-    {
-      title: "SHAPE THE PRODUCT.",
-      description:
-        "One last thing. Help us get the pricing and features right.",
-    },
-  ];
+  const currentMeta = WAITLIST_STEP_META[step];
+
+  if (submitted) {
+    return (
+      <section id="waitlist" className="bg-primary py-32 px-6">
+        <div className="max-w-4xl mx-auto text-center space-y-12">
+          <SuccessView email={formData.email} />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="waitlist" className="bg-primary py-32 px-6">
       <div className="max-w-4xl mx-auto text-center space-y-12">
         <AnimatePresence mode="wait">
-          {!submitted ? (
-            <motion.div
-              key={step}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="space-y-12"
+          <motion.div
+            key={step}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-12"
+          >
+            <div className="space-y-4">
+              <h2 className="text-5xl md:text-7xl lg:text-8xl font-space font-black leading-none text-black">
+                {currentMeta?.title}
+              </h2>
+              <p className="text-xl md:text-2xl font-bold max-w-xl mx-auto uppercase text-black">
+                {currentMeta?.description}
+              </p>
+            </div>
+
+            <form
+              onSubmit={handleSubmit}
+              className="max-w-2xl mx-auto space-y-6"
             >
-              <div className="space-y-4">
-                <h2 className="text-5xl md:text-7xl lg:text-8xl font-space font-black leading-none text-black">
-                  {stepMeta[step].title}
-                </h2>
-                <p className="text-xl md:text-2xl font-bold max-w-xl mx-auto uppercase text-black">
-                  {stepMeta[step].description}
-                </p>
-              </div>
+              {step === 0 && (
+                <Step1 formData={formData} updateField={updateField} />
+              )}
+              {step === 1 && (
+                <Step2
+                  formData={formData}
+                  updateField={updateField}
+                  onBack={prevStep}
+                />
+              )}
+              {step === 2 && (
+                <Step3
+                  formData={formData}
+                  updateField={updateField}
+                  onBack={prevStep}
+                  isSubmitting={isSubmitting}
+                />
+              )}
 
-              <form
-                onSubmit={handleSubmit}
-                className="max-w-2xl mx-auto space-y-6"
-              >
-                {step === 0 && (
-                  <Step1 formData={formData} updateField={updateField} />
-                )}
-                {step === 1 && (
-                  <Step2
-                    formData={formData}
-                    updateField={updateField}
-                    onBack={prevStep}
-                  />
-                )}
-                {step === 2 && (
-                  <Step3
-                    formData={formData}
-                    updateField={updateField}
-                    onBack={prevStep}
-                    isSubmitting={isSubmitting}
-                  />
-                )}
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-red-500 text-white p-4 border-4 border-black font-space font-bold uppercase shadow-brutal-sm"
+                >
+                  {error}
+                </motion.div>
+              )}
+            </form>
 
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-red-500 text-white p-4 border-4 border-black font-space font-bold uppercase shadow-brutal-sm"
-                  >
-                    {error}
-                  </motion.div>
-                )}
-              </form>
-
-              <div className="flex justify-center gap-2">
-                {[0, 1, 2].map((i) => (
-                  <div
-                    key={i}
-                    className={`h-3 w-12 border-2 border-black transition-colors ${i === step ? "bg-black" : "bg-white"}`}
-                  />
-                ))}
-              </div>
-            </motion.div>
-          ) : (
-            <SuccessView email={formData.email} />
-          )}
+            <div className="flex justify-center gap-2">
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  className={`h-3 w-12 border-2 border-black transition-colors ${i === step ? "bg-black" : "bg-white"}`}
+                />
+              ))}
+            </div>
+          </motion.div>
         </AnimatePresence>
       </div>
     </section>
