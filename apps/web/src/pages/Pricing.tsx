@@ -1,6 +1,51 @@
 import { Zap, X } from "lucide-react";
+import React from "react";
 import { BrutalButton } from "@/components/ui/BrutalButton";
 import { PRICING_FEATURES } from "@/constants/pricing";
+import { PricingFeature } from "@/types/Pricing";
+
+const FeatureCell = ({ value, isHighlighted = false }: { value: boolean | string; isHighlighted?: boolean }) => {
+  const content = () => {
+    if (value === true) {
+      return (
+        <Zap
+          size={20}
+          className="mx-auto text-primary"
+          fill="currentColor"
+        />
+      );
+    }
+    if (value === "Partial") {
+      return <span className="text-xs">PARTIAL</span>;
+    }
+    if (typeof value === "string") {
+      return <span className="text-xs uppercase">{value}</span>;
+    }
+    return <X size={20} className="mx-auto opacity-20" />;
+  };
+
+  return (
+    <td className={`p-6 text-center ${isHighlighted ? "border-x-4 border-primary/20 bg-primary/5" : ""}`}>
+      {content()}
+    </td>
+  );
+};
+
+const FeatureRow = ({ feature, index }: { feature: PricingFeature; index: number }) => (
+  <tr className={`border-b-2 border-primary/10 ${index % 2 === 0 ? "bg-zinc-900/50" : ""}`}>
+    <td className="p-6">
+      <div className="font-bold uppercase text-sm md:text-base">
+        {feature.name}
+      </div>
+      <div className="text-[10px] opacity-40 font-work mt-1 lowercase">
+        {feature.detail}
+      </div>
+    </td>
+    <FeatureCell value={feature.solo} />
+    <FeatureCell value={feature.pro} isHighlighted />
+    <FeatureCell value={feature.enterprise} />
+  </tr>
+);
 
 export const PricingPage = () => {
   return (
@@ -29,62 +74,7 @@ export const PricingPage = () => {
             </thead>
             <tbody className="text-white">
               {PRICING_FEATURES.map((f, i) => (
-                <tr
-                  key={f.name}
-                  className={`border-b-2 border-primary/10 ${i % 2 === 0 ? "bg-zinc-900/50" : ""}`}
-                >
-                  <td className="p-6">
-                    <div className="font-bold uppercase text-sm md:text-base">
-                      {f.name}
-                    </div>
-                    <div className="text-[10px] opacity-40 font-work mt-1 lowercase">
-                      {f.detail}
-                    </div>
-                  </td>
-                  <td className="p-6 text-center">
-                    {f.solo === true ? (
-                      <Zap
-                        size={20}
-                        className="mx-auto text-primary"
-                        fill="currentColor"
-                      />
-                    ) : f.solo === "Partial" ? (
-                      <span className="text-xs">PARTIAL</span>
-                    ) : typeof f.solo === "string" ? (
-                      <span className="text-xs uppercase">{f.solo}</span>
-                    ) : (
-                      <X size={20} className="mx-auto opacity-20" />
-                    )}
-                  </td>
-                  <td className="p-6 text-center border-x-4 border-primary/20 bg-primary/5">
-                    {f.pro === true ? (
-                      <Zap
-                        size={20}
-                        className="mx-auto text-primary"
-                        fill="currentColor"
-                      />
-                    ) : f.pro === "Partial" ? (
-                      <span className="text-xs">PARTIAL</span>
-                    ) : typeof f.pro === "string" ? (
-                      <span className="text-xs uppercase">{f.pro}</span>
-                    ) : (
-                      <X size={20} className="mx-auto opacity-20" />
-                    )}
-                  </td>
-                  <td className="p-6 text-center">
-                    {f.enterprise === true ? (
-                      <Zap
-                        size={20}
-                        className="mx-auto text-primary"
-                        fill="currentColor"
-                      />
-                    ) : typeof f.enterprise === "string" ? (
-                      <span className="text-xs uppercase">{f.enterprise}</span>
-                    ) : (
-                      <X size={20} className="mx-auto opacity-20" />
-                    )}
-                  </td>
-                </tr>
+                <FeatureRow key={f.name} feature={f} index={i} />
               ))}
             </tbody>
           </table>

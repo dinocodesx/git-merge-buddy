@@ -12,16 +12,32 @@ interface TableOfContentsProps {
   content: string;
 }
 
+const TOCHeader = () => (
+  <div className="flex items-center gap-2 mb-6 text-primary border-b-4 border-primary/20 pb-2">
+    <List size={20} />
+    <h3 className="font-space font-black uppercase text-lg tracking-tighter">
+      ON THIS PAGE
+    </h3>
+  </div>
+);
+
+const TOCProTip = () => (
+  <div className="mt-12 p-4 bg-zinc-800 border-2 border-primary/20 shadow-brutal-sm">
+    <p className="text-[10px] font-work font-bold text-white/40 uppercase leading-tight">
+      Pro Tip: Use <span className="text-primary">CMD+K</span> to search through our entire documentation instantly.
+    </p>
+  </div>
+);
+
 export const TableOfContents = ({ content }: TableOfContentsProps) => {
   const headings = useMemo(() => {
-    // Regex to match headings: # Heading, ## Heading, etc.
     const headingRegex = /^(#{1,4})\s+(.+)$/gm;
     const items: TOCItem[] = [];
     let match;
 
     while ((match = headingRegex.exec(content)) !== null) {
       const level = match[1].length;
-      const text = match[2].replace(/\[(.*?)\]\(.*?\)/g, "$1"); // Remove markdown links from text
+      const text = match[2].replace(/\[(.*?)\]\(.*?\)/g, "$1");
       items.push({
         id: slugify(text),
         text,
@@ -38,7 +54,7 @@ export const TableOfContents = ({ content }: TableOfContentsProps) => {
     e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
-      const offset = 80; // Adjust for sticky headers if any
+      const offset = 80;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
 
@@ -51,12 +67,7 @@ export const TableOfContents = ({ content }: TableOfContentsProps) => {
 
   return (
     <aside className="hidden xl:block w-64 sticky top-8 h-fit max-h-[calc(100vh-4rem)] overflow-y-auto pr-4">
-      <div className="flex items-center gap-2 mb-6 text-primary border-b-4 border-primary/20 pb-2">
-        <List size={20} />
-        <h3 className="font-space font-black uppercase text-lg tracking-tighter">
-          ON THIS PAGE
-        </h3>
-      </div>
+      <TOCHeader />
       
       <nav className="space-y-4">
         {headings.map((heading, index) => (
@@ -81,11 +92,7 @@ export const TableOfContents = ({ content }: TableOfContentsProps) => {
         ))}
       </nav>
 
-      <div className="mt-12 p-4 bg-zinc-800 border-2 border-primary/20 shadow-brutal-sm">
-        <p className="text-[10px] font-work font-bold text-white/40 uppercase leading-tight">
-          Pro Tip: Use <span className="text-primary">CMD+K</span> to search through our entire documentation instantly.
-        </p>
-      </div>
+      <TOCProTip />
     </aside>
   );
 };

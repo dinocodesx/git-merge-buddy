@@ -22,21 +22,23 @@ export const useWaitlistForm = (onSuccess: () => void) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const nextStep = () => {
-    // Basic validation before moving forward
-    if (step === 0) {
-      if (!formData.email) {
-        setError("Email is required");
-        return;
-      }
-      if (!isValidEmail(formData.email)) {
-        setError("Please enter a valid email address");
-        return;
-      }
+  const validateStep = (currentStep: number): string | null => {
+    if (currentStep === 0) {
+      if (!formData.email) return "Email is required";
+      if (!isValidEmail(formData.email)) return "Please enter a valid email address";
     }
     
-    if (step === 1 && (!formData.reason || !formData.usage)) {
-      setError("Please fill in all fields");
+    if (currentStep === 1 && (!formData.reason || !formData.usage)) {
+      return "Please fill in all fields";
+    }
+
+    return null;
+  };
+
+  const nextStep = () => {
+    const validationError = validateStep(step);
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
@@ -44,7 +46,10 @@ export const useWaitlistForm = (onSuccess: () => void) => {
     setStep((prev) => prev + 1);
   };
 
-  const prevStep = () => setStep((prev) => prev - 1);
+  const prevStep = () => {
+    setError(null);
+    setStep((prev) => prev - 1);
+  };
 
   const submitForm = async () => {
     setIsSubmitting(true);
@@ -59,15 +64,16 @@ export const useWaitlistForm = (onSuccess: () => void) => {
         body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
-        onSuccess();
-      } else {
+      if (!response.ok) {
         const data = await response.json();
-        setError(data.error || "Failed to join waitlist. Please try again.");
+        throw new Error(data.error || "Failed to join waitlist. Please try again.");
       }
+
+      onSuccess();
     } catch (err) {
+      const message = err instanceof Error ? err.message : "Network error. Please check your connection and try again.";
       console.error("Submission failed:", err);
-      setError("Network error. Please check your connection and try again.");
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }

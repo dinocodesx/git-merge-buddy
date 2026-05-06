@@ -7,13 +7,13 @@ export const useKeyboardShortcut = (
 ) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      const matchKey = e.key.toLowerCase() === key.toLowerCase();
-      const matchModifier = metaOrCtrl ? e.metaKey || e.ctrlKey : true;
+      const isMatch = e.key.toLowerCase() === key.toLowerCase();
+      const hasModifier = metaOrCtrl ? e.metaKey || e.ctrlKey : true;
 
-      if (matchKey && matchModifier) {
-        e.preventDefault();
-        callback();
-      }
+      if (!isMatch || !hasModifier) return;
+
+      e.preventDefault();
+      callback();
     };
 
     window.addEventListener("keydown", handleKeyDown);

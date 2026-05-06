@@ -5,6 +5,52 @@ import { Menu, X } from "lucide-react";
 import { BrutalButton } from "@/components/ui/BrutalButton";
 import { NavLinkItem } from "@/types/Common";
 
+const DesktopMenu = ({ links, currentPath }: { links: NavLinkItem[]; currentPath: string }) => (
+  <div className="hidden md:flex gap-8 items-center font-space font-bold uppercase ml-auto mr-8">
+    {links.map((link) => (
+      <Link
+        key={link.name}
+        to={link.path}
+        className={`transition-all hover:text-primary hover:bg-black px-2 py-1 ${currentPath === link.path ? "bg-black text-primary" : "text-black"}`}
+      >
+        {link.name}
+      </Link>
+    ))}
+  </div>
+);
+
+const MobileMenu = ({ links, isOpen, onClose }: { links: NavLinkItem[]; isOpen: boolean; onClose: () => void }) => (
+  <AnimatePresence>
+    {isOpen && (
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        className="absolute top-full left-0 w-full bg-white border-b-4 border-black p-6 flex flex-col gap-6 md:hidden z-40 shadow-brutal"
+      >
+        {links.map((link) => (
+          <Link
+            key={link.name}
+            to={link.path}
+            onClick={onClose}
+            className="text-2xl font-space font-bold uppercase text-black"
+          >
+            {link.name}
+          </Link>
+        ))}
+        <BrutalButton
+          size="lg"
+          as="a"
+          href="#waitlist"
+          onClick={onClose}
+        >
+          Join Beta
+        </BrutalButton>
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
@@ -24,18 +70,7 @@ export const Navbar = () => {
         Git Merge Buddy
       </Link>
 
-      {/* Desktop Menu */}
-      <div className="hidden md:flex gap-8 items-center font-space font-bold uppercase ml-auto mr-8">
-        {links.map((link) => (
-          <Link
-            key={link.name}
-            to={link.path}
-            className={`transition-all hover:text-primary hover:bg-black px-2 py-1 ${location.pathname === link.path ? "bg-black text-primary" : "text-black"}`}
-          >
-            {link.name}
-          </Link>
-        ))}
-      </div>
+      <DesktopMenu links={links} currentPath={location.pathname} />
 
       <div className="flex items-center gap-4">
         <BrutalButton
@@ -55,36 +90,7 @@ export const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 w-full bg-white border-b-4 border-black p-6 flex flex-col gap-6 md:hidden z-40 shadow-brutal"
-          >
-            {links.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                onClick={() => setIsOpen(false)}
-                className="text-2xl font-space font-bold uppercase text-black"
-              >
-                {link.name}
-              </Link>
-            ))}
-            <BrutalButton
-              size="lg"
-              as="a"
-              href="#waitlist"
-              onClick={() => setIsOpen(false)}
-            >
-              Join Beta
-            </BrutalButton>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <MobileMenu links={links} isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </nav>
   );
 };

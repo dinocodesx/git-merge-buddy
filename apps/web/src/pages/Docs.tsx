@@ -6,6 +6,29 @@ import { TableOfContents } from "@/components/docs/TableOfContents";
 import { BrutalButton } from "@/components/ui/BrutalButton";
 import { DOC_SECTIONS } from "@/constants/docs";
 
+const LoadingView = () => (
+  <div className="flex items-center justify-center h-64">
+    <div className="text-primary font-space font-bold text-2xl animate-pulse">
+      LOADING...
+    </div>
+  </div>
+);
+
+const DocsFooter = () => (
+  <div className="mt-24 pt-8 border-t-4 border-primary/20 flex justify-between items-center">
+    <BrutalButton
+      variant="white"
+      size="sm"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    >
+      Back to Top
+    </BrutalButton>
+    <div className="flex gap-4 opacity-40 font-bold uppercase text-xs text-white">
+      <span>Last Updated: 2024</span>
+    </div>
+  </div>
+);
+
 export const DocsPage = () => {
   const [activeSectionId, setActiveSectionId] = useState("getting-started");
   const [content, setContent] = useState<string>("");
@@ -50,30 +73,11 @@ export const DocsPage = () => {
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
             >
-              {isLoading ? (
-                <div className="flex items-center justify-center h-64">
-                  <div className="text-primary font-space font-bold text-2xl animate-pulse">
-                    LOADING...
-                  </div>
-                </div>
-              ) : (
-                <MarkdownRenderer content={content} />
-              )}
+              {isLoading ? <LoadingView /> : <MarkdownRenderer content={content} />}
             </motion.div>
           </AnimatePresence>
 
-          <div className="mt-24 pt-8 border-t-4 border-primary/20 flex justify-between items-center">
-            <BrutalButton
-              variant="white"
-              size="sm"
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            >
-              Back to Top
-            </BrutalButton>
-            <div className="flex gap-4 opacity-40 font-bold uppercase text-xs text-white">
-              <span>Last Updated: 2024</span>
-            </div>
-          </div>
+          <DocsFooter />
         </main>
 
         {!isLoading && <TableOfContents content={content} />}
