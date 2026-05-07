@@ -1,0 +1,23 @@
+model CreditTransaction {
+  id          String          @id @default(cuid())
+  amount      Int
+  type        TransactionType
+  description String?
+  metadata    Json? // Additional info like Polar Order ID
+
+  // Relations
+  userId      String
+  user        User            @relation(fields: [userId], references: [id])
+
+  // Timestamps
+  createdAt   DateTime        @default(now())
+
+  @@map("credit_transaction")
+}
+
+enum TransactionType {
+  REFILL
+  CHARGE
+  REFUND
+  BONUS
+}
