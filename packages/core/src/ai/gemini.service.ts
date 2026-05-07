@@ -7,39 +7,50 @@ import { ReviewResponse } from "../types";
  */
 export class GeminiService {
   private genAI: GoogleGenerativeAI;
+  private modelName: string;
 
   /**
    * Initializes the Gemini AI service.
-   * @param apiKey - The Google AI API key. Defaults to GEMINI_API_KEY from environment.
+   * @param options - Configuration options.
    */
-  constructor(apiKey: string = process.env.GEMINI_API_KEY!) {
+  constructor(options?: { apiKey?: string; model?: string }) {
+    const apiKey = options?.apiKey ?? process.env.GEMINI_API_KEY!;
     if (!apiKey) {
       throw new Error("Gemini API key is required. Set GEMINI_API_KEY in .env or pass it to the constructor.");
     }
     this.genAI = new GoogleGenerativeAI(apiKey);
+    this.modelName = options?.model ?? "gemini-1.5-flash";
   }
 
   /**
    * Generates a structured code review based on a Git diff.
    * 
-   * Uses the `gemini-1.5-flash` model for fast, cost-effective analysis.
+   * Uses a fast, cost-effective model for analysis by default.
    * The output is strictly enforced as JSON to allow automated posting of comments back to GitHub.
-   * 
-   * @param diff - The standard Git diff string to analyze.
-   * @param personaPrompt - Optional custom instructions to guide the AI's review style (e.g., "be extremely critical of security").
-   * @returns A ReviewResponse containing an array of specific file/line comments.
-   * @throws Error if the AI response cannot be parsed or is in an invalid format.
    */
   async generateReview(diff: string, personaPrompt: string = ""): Promise<ReviewResponse> {
-    const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = this.genAI.getGenerativeModel({ model: this.modelName });
 
     const systemInstruction = `
-      You are an expert code reviewer. Review the following code diff.
-      ${personaPrompt ? `Follow this specific persona/rules: ${personaPrompt}` : ""}
+      You are an expert code reviewer. Your goal is to provide high-quality, concise, and actionable feedback.
+      Review the following Git diff and identify bugs, security vulnerabilities, performance bottlenecks, or significant stylistic issues.
       
-      Output MUST be a valid JSON object with a single key "reviews" which is an array of objects.
-      Each object must have: "file" (string), "line" (number), and "comment" (string).
-      Do not include any markdown formatting or text outside the JSON.
+      ${personaPrompt ? `Follow these specific persona guidelines:\n${personaPrompt}\n` : ""}
+      
+      CRITICAL RULES:
+      - Return ONLY a valid JSON object. No prose, no conversational text.
+      - If you find no issues, return { "reviews": [] }.
+      - Each review object must contain:
+        "file": (string) The relative file path.
+        "line": (number) The specific line number in the NEW version of the file.
+        "comment": (string) Clear feedback in Markdown format.
+      
+      RESPONSE SCHEMA:
+      {
+        "reviews": [
+          { "file": "src/index.ts", "line": 42, "comment": "Found a potential null pointer here..." }
+        ]
+      }
     `;
 
     const result = await model.generateContent([systemInstruction, diff]);
@@ -47,12 +58,14 @@ export class GeminiService {
     const text = response.text();
 
     try {
-      // Basic sanitization in case Gemini wraps in ```json ... ``` despite instructions
-      const jsonStr = text.replace(/```json|```/g, "").trim();
+      // Robust JSON extraction (handles markdown blocks if AI includes them)
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      const jsonStr = jsonMatch ? jsonMatch[0] : text;
+      
       return JSON.parse(jsonStr) as ReviewResponse;
     } catch (error) {
-      console.error("Failed to parse Gemini response:", text);
-      throw new Error("Invalid AI response format");
+      console.error("Failed to parse Gemini response. Raw output:", text);
+      throw new Error(`AI generated an invalid JSON response. Please check the logs.`);
     }
   }
 }

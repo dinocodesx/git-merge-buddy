@@ -5,6 +5,17 @@ import { prisma, User } from "../client";
  */
 export class UserRepository {
   /**
+   * Retrieves a user by their unique internal ID.
+   * @param id - The unique internal ID of the user.
+   * @returns The User object if found, otherwise null.
+   */
+  async getUserById(id: string): Promise<User | null> {
+    return prisma.user.findUnique({
+      where: { id },
+    });
+  }
+
+  /**
    * Retrieves a user by their email address.
    * @param email - The unique email address of the user.
    * @returns The User object if found, otherwise null.
