@@ -1,159 +1,119 @@
-# Turborepo starter
+# Optimized Git & GitHub Workflow
 
-This Turborepo starter is maintained by the Turborepo core team.
+This guide outlines a high-performance workflow using Git Worktrees, a Bare Repository setup, and efficient rebase strategies.
 
-## Using this example
+## 1. Setup: The Bare Repository Approach
 
-Run the following command:
+Using a bare repository allows you to manage multiple branches as sibling directories (worktrees) without them being nested or interfering with each other.
 
-```sh
-npx create-turbo@latest
+### Initial Initialization
+```bash
+# Clone the repository as a bare repo into a hidden folder
+git clone --bare <repo-url> .bare
+
+# Create a .git file that points to the bare repo
+# This allows git commands to work in the root directory
+echo "gitdir: ./.bare" > .git
+
+# Update the fetch configuration to ensure all remote branches are tracked correctly
+git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+
+# Add your main branch as the first worktree
+git worktree add main
 ```
 
-## What's inside?
+## 2. Fast Feature Development
 
-This Turborepo includes the following packages/apps:
+Instead of `git checkout -b`, use worktrees to create a new isolated environment for every feature or bug fix.
 
-### Apps and Packages
+### Create a New Branch & Worktree
+```bash
+# Create a new branch and a directory for it
+git worktree add -b feature/my-new-task feature-name
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+# Change into that directory
+cd feature-name
 ```
 
-Without global `turbo`, use your package manager:
+### Benefits
+- **Zero-cost switching:** Switch between "main" and "feature" just by changing directories (`cd ../main`). No more `git stash` or waiting for dependencies to re-install.
+- **Parallel Testing:** Run tests in one worktree while coding in another.
 
-```sh
-cd my-turborepo
-npx turbo build
-bun dlx turbo build
-bun exec turbo build
+## 3. The "Fetch, Don't Pull" Rule
+
+Avoid `git pull`. It performs a `fetch` and then an automatic `merge`, which often creates "messy" merge commits that clutter your history. Instead, use `fetch` to see what changed, then decide how to integrate it.
+
+### Why Fetch?
+- **Control:** You see what others have done before you change your local code.
+- **Clean History:** You can use `rebase` to keep your changes on top of the latest work, avoiding "Merge branch 'main' of..." commits.
+- **Safety:** It won't cause conflicts until you are ready to handle them.
+
+### Syncing your environment
+```bash
+# 1. Get the latest metadata and commits from GitHub
+git fetch origin
+
+# 2. Review what changed (optional)
+git log HEAD..origin/main --oneline
+
+# 3. Integrate changes (The Clean Way)
+# This puts your local commits on top of the new remote commits
+git rebase origin/main
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## 4. Mastering History with Rebase
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+### Overriding/Fixing Mistakes
+If you made a bad commit or want to combine multiple small commits:
+```bash
+# Interactively rebase the last 5 commits
+git rebase -i HEAD~5
 
-```sh
-turbo build --filter=docs
+# Options in the editor:
+# 'pick' -> keep commit
+# 'squash' -> combine into previous commit
+# 'edit' -> stop and let you change the code at that point
 ```
 
-Without global `turbo`:
+### "Going Back" to a Working State
+If the latest version is broken and you've lost track:
+```bash
+# 1. Find the commit hash where things last worked
+git reflog
 
-```sh
-npx turbo build --filter=docs
-bun exec turbo build --filter=docs
-bun exec turbo build --filter=docs
+# 2. Hard reset to that working state
+git reset --hard <commit-hash>
+
+# 3. If you already pushed the broken code, force push the fix
+git push origin <branch-name> --force-with-lease
 ```
 
-### Develop
+## 4. GitHub CLI (`gh`) Integration
 
-To develop all apps and packages, run the following command:
+Automate the PR process without leaving the terminal.
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+### Create and Manage PRs
+```bash
+# Create a PR for the current branch
+gh pr create --fill --assignee @me
 
-```sh
-cd my-turborepo
-turbo dev
+# Check the status of your PRs
+gh pr status
+
+# View the diff of a PR
+gh pr diff
+
+# Merge when ready
+gh pr merge --squash --delete-branch
 ```
 
-Without global `turbo`, use your package manager:
+## 5. Maintenance: Cleaning Up
 
-```sh
-cd my-turborepo
-npx turbo dev
-bun exec turbo dev
-bun exec turbo dev
+When a feature is merged and done:
+```bash
+# Remove the worktree directory and the git record
+git worktree remove feature-name
+
+# Delete the local branch
+git branch -D feature/my-new-task
 ```
-
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-bun exec turbo dev --filter=web
-bun exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-bun exec turbo login
-bun exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-bun exec turbo link
-bun exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
