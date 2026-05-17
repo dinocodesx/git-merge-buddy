@@ -63,7 +63,7 @@ git rebase origin/main
 If you made a bad commit or want to combine multiple small commits:
 ```bash
 # Interactively rebase the last 5 commits
-git rebase -i HEAD~5
+git rebase -i HEAD~<Number of Commit: 5>
 
 # Options in the editor:
 # 'pick' -> keep commit
