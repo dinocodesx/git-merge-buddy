@@ -8,18 +8,14 @@ Using a bare repository allows you to manage multiple branches as sibling direct
 
 ### Initial Initialization
 ```bash
+mkdir <repo-name>
+cd <repo-name>
+
 # Clone the repository as a bare repo into a hidden folder
-git clone --bare <repo-url> .bare
-
-# Create a .git file that points to the bare repo
-# This allows git commands to work in the root directory
-echo "gitdir: ./.bare" > .git
-
-# Update the fetch configuration to ensure all remote branches are tracked correctly
-git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+git clone <repo-url> --bare .git
 
 # Add your main branch as the first worktree
-git worktree add main
+git worktree add ./main
 ```
 
 ## 2. Fast Feature Development
@@ -29,10 +25,10 @@ Instead of `git checkout -b`, use worktrees to create a new isolated environment
 ### Create a New Branch & Worktree
 ```bash
 # Create a new branch and a directory for it
-git worktree add -b feature/my-new-task feature-name
+git worktree add -b <feature/my-new-task> ./<feature-name>
 
 # Change into that directory
-cd feature-name
+cd <feature-name>
 ```
 
 ### Benefits
