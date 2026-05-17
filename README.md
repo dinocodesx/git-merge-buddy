@@ -39,11 +39,6 @@ cd <feature-name>
 
 Avoid `git pull`. It performs a `fetch` and then an automatic `merge`, which often creates "messy" merge commits that clutter your history. Instead, use `fetch` to see what changed, then decide how to integrate it.
 
-### Why Fetch?
-- **Control:** You see what others have done before you change your local code.
-- **Clean History:** You can use `rebase` to keep your changes on top of the latest work, avoiding "Merge branch 'main' of..." commits.
-- **Safety:** It won't cause conflicts until you are ready to handle them.
-
 ### Syncing your environment
 ```bash
 # 1. Get the latest metadata and commits from GitHub
@@ -53,26 +48,38 @@ git fetch origin
 git log HEAD..origin/main --oneline
 
 # 3. Integrate changes (The Clean Way)
-# This puts your local commits on top of the new remote commits
 git rebase origin/main
 ```
 
-## 4. Mastering History with Rebase
+## 4. Mastering History & Quick Fixes
 
-### Overriding/Fixing Mistakes
-If you made a bad commit or want to combine multiple small commits:
+### Fixing the Very Last Commit (Amend)
+If you made a typo in the message or forgot to add a small change:
 ```bash
-# Interactively rebase the last 5 commits
-git rebase -i HEAD~<Number of Commit: 5>
+# Change the message of the last commit
+git commit --amend -m "New and correct message"
 
-# Options in the editor:
-# 'pick' -> keep commit
-# 'squash' -> combine into previous commit
-# 'edit' -> stop and let you change the code at that point
+# Add a forgotten file to the last commit without changing the message
+git add .
+git commit --amend --no-edit
+```
+
+### Undoing Changes (Revert)
+If a commit is already pushed and you need to "undo" it safely without rewriting history:
+```bash
+# Creates a new commit that is the exact opposite of the target commit
+git revert <commit-hash>
+```
+
+### Interactively Overriding History
+```bash
+# Interactively rebase the last X commits
+git rebase -i HEAD~<number>
+
+# Options: 'pick' (keep), 'squash' (combine), 'edit' (stop and change)
 ```
 
 ### "Going Back" to a Working State
-If the latest version is broken and you've lost track:
 ```bash
 # 1. Find the commit hash where things last worked
 git reflog
@@ -80,15 +87,51 @@ git reflog
 # 2. Hard reset to that working state
 git reset --hard <commit-hash>
 
-# 3. If you already pushed the broken code, force push the fix
+# 3. Force push if you already pushed the broken code
 git push origin <branch-name> --force-with-lease
 ```
 
-## 4. GitHub CLI (`gh`) Integration
+## 5. Temporary Storage (Stashing)
+
+Even with worktrees, stashing is useful for moving small changes out of the way without committing.
+
+```bash
+# Save changes with a name
+git stash push -m "work-in-progress-on-ui"
+
+# List all stashes
+git stash list
+
+# Apply the most recent stash and remove it from the list
+git stash pop
+```
+
+## 6. Power User Visibility
+
+Get full visibility into your branches and worktrees.
+
+### Visualizing History
+```bash
+# The ultimate visualization command
+git log --graph --oneline --decorate --all
+```
+
+### Branch & Worktree Audit
+```bash
+# See all local branches and their sync status with remote
+git branch -vv
+
+# See all active worktrees and their locations
+git worktree list
+
+# Find merged branches for cleanup
+git branch --merged
+```
+
+## 7. GitHub CLI (`gh`) Integration
 
 Automate the PR process without leaving the terminal.
 
-### Create and Manage PRs
 ```bash
 # Create a PR for the current branch
 gh pr create --fill --assignee @me
@@ -96,20 +139,19 @@ gh pr create --fill --assignee @me
 # Check the status of your PRs
 gh pr status
 
-# View the diff of a PR
-gh pr diff
-
 # Merge when ready
 gh pr merge --squash --delete-branch
 ```
 
-## 5. Maintenance: Cleaning Up
+## 8. Maintenance: Cleaning Up
 
-When a feature is merged and done:
 ```bash
 # Remove the worktree directory and the git record
-git worktree remove feature-name
+git worktree remove <feature-name>
 
 # Delete the local branch
-git branch -D feature/my-new-task
+git branch -D <feature/branch-name>
+
+# Clean up internal references if a worktree folder was deleted manually
+git worktree prune
 ```
